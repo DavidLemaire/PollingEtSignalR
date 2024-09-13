@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using labo.signalr.api.Data;
+using labo.signalr.api.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,8 @@ builder.Services.AddSwaggerGen();
 
 // TODO: SignalR: Ajouter SignalR
 
+
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", builder => builder
@@ -25,8 +28,15 @@ builder.Services.AddCors(options =>
         .AllowAnyHeader()
         .AllowCredentials());
 });
+builder.Services.AddSignalR();
 
 var app = builder.Build();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapHub<UselessTasksHub>("/UselessTasksHub");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
